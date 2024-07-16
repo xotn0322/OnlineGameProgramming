@@ -12,6 +12,7 @@ public class Enemy_move : MonoBehaviour
     private float HP = 10.0f;
 
     public float detectionRange = 10.0f;  // Enemy의 감지 범위
+    public float addDetectionRange = 5.0f; //경계 상태 시의 감지 범위 증가량
     public float detectionAngle = 45.0f;  // Enemy의 감지 각도
     public float attackRange = 2.0f;      // Enemy의공격 사거리
     public int rayCount = 10;             // 부채꼴을 구성할 Ray의 개수
@@ -22,7 +23,8 @@ public class Enemy_move : MonoBehaviour
     {
         IDLE,
         CHASE,
-        ATTACK
+        ATTACK,
+        ALERT
     }
 
     State state;
@@ -41,7 +43,7 @@ public class Enemy_move : MonoBehaviour
         {
             DetectTarget();
             yield return StartCoroutine(state.ToString());
-            Debug.Log(state.ToString());
+            //Debug.Log(state.ToString());
         }
     }
 
@@ -82,11 +84,26 @@ public class Enemy_move : MonoBehaviour
                 
                 // StateMachine 을 대기로 변경
                 point = getShortestPoint(); //근처에서 가장 가까운 웨이포인트 검색
-                ChangeState(State.IDLE);
+                ChangeState(State.ALERT);
                 yield return null;
             }
         }
 
+        yield return null;
+    }
+
+    IEnumerator ALERT()
+    {
+        detectionRange += addDetectionRange;
+        StartCoroutine(ALERT_TIME());
+        ChangeState(State.IDLE);
+        yield return null;
+    }
+
+    IEnumerator ALERT_TIME()
+    {
+        yield return new WaitForSeconds(60);
+        detectionRange -= addDetectionRange;
         yield return null;
     }
 
@@ -124,11 +141,9 @@ public class Enemy_move : MonoBehaviour
         state = nowState;
     }
 
-    
-
     void DetectTarget()
     {
-        Debug.Log(123);
+        Debug.Log(detectionRange);
         isTargetDetected = false;
 
         float angleStep = detectionAngle / rayCount;
@@ -157,7 +172,7 @@ public class Enemy_move : MonoBehaviour
         }
 
         // 감지 결과를 콘솔에 출력 (디버깅 용)
-        Debug.Log("Target Detected: " + isTargetDetected);
+       // Debug.Log("Target Detected: " + isTargetDetected);
     }
 
     // 감지 결과를 반환하는 함수

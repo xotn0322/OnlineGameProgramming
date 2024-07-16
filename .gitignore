@@ -1,1 +1,9 @@
 ﻿Library
+.vs
+Temp
+Assembly-CSharp.csproj
+Assembly-CSharp-Editor.csproj
+ConeMeshAssembly.csproj
+ConeMeshEditorAssembly.csproj
+OnlineGameProgramming.sln
+UserSettings
