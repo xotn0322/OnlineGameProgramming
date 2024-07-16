@@ -10,9 +10,10 @@ public class Enemy_move : MonoBehaviour
     [SerializeField] private GameObject[] wayPoints;
     private int point;
     private float HP = 10.0f;
+    private float initDetectionRange;
 
     public float detectionRange = 10.0f;  // Enemy의 감지 범위
-    public float addDetectionRange = 5.0f; //경계 상태 시의 감지 범위 증가량
+    public float alertDetectionRange = 15.0f; //경계 상태 시의 감지 범위
     public float detectionAngle = 45.0f;  // Enemy의 감지 각도
     public float attackRange = 2.0f;      // Enemy의공격 사거리
     public int rayCount = 10;             // 부채꼴을 구성할 Ray의 개수
@@ -32,6 +33,7 @@ public class Enemy_move : MonoBehaviour
     private void Start()
     {
         nav = GetComponent<NavMeshAgent>();
+        initDetectionRange = detectionRange;
 
         state = State.IDLE;
         StartCoroutine(StateMachine());
@@ -64,7 +66,6 @@ public class Enemy_move : MonoBehaviour
     IEnumerator CHASE()
     {
         nav.destination = distributeY(target);
-        //DetectTarget();
         if (IsTargetDetected())
         {
             if (nav.remainingDistance <= attackRange)
@@ -82,7 +83,7 @@ public class Enemy_move : MonoBehaviour
                 nav.destination = transform.position;
                 yield return new WaitForSeconds(0.5f);*/
                 
-                // StateMachine 을 대기로 변경
+                // StateMachine 을 경계로 변경
                 point = getShortestPoint(); //근처에서 가장 가까운 웨이포인트 검색
                 ChangeState(State.ALERT);
                 yield return null;
@@ -94,7 +95,8 @@ public class Enemy_move : MonoBehaviour
 
     IEnumerator ALERT()
     {
-        detectionRange += addDetectionRange;
+        Debug.Log(1);
+        detectionRange = alertDetectionRange;
         StartCoroutine(ALERT_TIME());
         ChangeState(State.IDLE);
         yield return null;
@@ -103,7 +105,8 @@ public class Enemy_move : MonoBehaviour
     IEnumerator ALERT_TIME()
     {
         yield return new WaitForSeconds(60);
-        detectionRange -= addDetectionRange;
+        Debug.Log(0);
+        detectionRange = initDetectionRange;
         yield return null;
     }
 
@@ -143,7 +146,7 @@ public class Enemy_move : MonoBehaviour
 
     void DetectTarget()
     {
-        Debug.Log(detectionRange);
+        //Debug.Log(detectionRange);
         isTargetDetected = false;
 
         float angleStep = detectionAngle / rayCount;
