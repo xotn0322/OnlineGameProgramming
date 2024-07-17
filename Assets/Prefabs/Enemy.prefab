@@ -122,8 +122,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68513714f8868f6418827fba665fb037, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nav: {fileID: 8562002077160971905}
+  detectionRange: 10
+  alertDetectionRange: 15
+  detectionAngle: 45
+  attackRange: 2
+  rayCount: 10
+  targetTag: Player
   wayPoints: []
+  controller: {fileID: 8084495130921541041, guid: 979910fba9864ef48bc5a10fb5e89c37,
+    type: 3}
 --- !u!195 &8562002077160971905
 NavMeshAgent:
   m_ObjectHideFlags: 0

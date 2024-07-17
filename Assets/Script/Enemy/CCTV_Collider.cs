@@ -6,6 +6,7 @@ public class CCTV_Collider : MonoBehaviour
 {
     private bool isPlayerDetected = false;
     public Renderer lightRenderer;
+    public Enemy_control e_control;
     private Color initColor;
 
     private void Start()
@@ -18,6 +19,7 @@ public class CCTV_Collider : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerDetected = true;
+            e_control.enemyAlert(other.transform);
             // 자식 오브젝트의 색상을 빨간색으로 변경합니다.
             GetComponent<MeshRenderer>().material.color = Color.red;
             lightRenderer.material.color = Color.red;

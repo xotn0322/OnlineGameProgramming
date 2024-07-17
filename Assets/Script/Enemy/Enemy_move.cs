@@ -7,10 +7,12 @@ using UnityEngine.AI;
 public class Enemy_move : MonoBehaviour
 {
     NavMeshAgent nav;
-    [SerializeField] private GameObject[] wayPoints;
     private int point;
     private float HP = 10.0f;
     private float initDetectionRange;
+    private bool isTargetDetected = false;
+    private bool isAlert = false;
+    private GameObject target;
 
     public float detectionRange = 10.0f;  // Enemy의 감지 범위
     public float alertDetectionRange = 15.0f; //경계 상태 시의 감지 범위
@@ -18,9 +20,10 @@ public class Enemy_move : MonoBehaviour
     public float attackRange = 2.0f;      // Enemy의공격 사거리
     public int rayCount = 10;             // 부채꼴을 구성할 Ray의 개수
     public string targetTag = "Player";   // 감지할 대상의 태그
-    private bool isTargetDetected = false;
-    private GameObject target;
-    enum State
+    [SerializeField] private GameObject[] wayPoints;
+
+    [HideInInspector]
+    public enum State
     {
         IDLE,
         CHASE,
@@ -72,6 +75,7 @@ public class Enemy_move : MonoBehaviour
             {
                 // StateMachine 을 공격으로 변경
                 //ChangeState(State.ATTACK);
+                UI_End.instance.Dead();
             }
         }
         else
@@ -82,9 +86,13 @@ public class Enemy_move : MonoBehaviour
                 /*//사거리에서 벗어난 경우 즉시 멈춤
                 nav.destination = transform.position;
                 yield return new WaitForSeconds(0.5f);*/
-                
+
                 // StateMachine 을 경계로 변경
-                point = getShortestPoint(); //근처에서 가장 가까운 웨이포인트 검색
+                //point = getShortestPoint(); //근처에서 가장 가까운 웨이포인트 검색
+                point = 0;
+                Debug.Log(point);
+                nav.destination = distributeY(wayPoints[point]);
+                isAlert = true;
                 ChangeState(State.ALERT);
                 yield return null;
             }
@@ -97,6 +105,7 @@ public class Enemy_move : MonoBehaviour
     {
         Debug.Log(1);
         detectionRange = alertDetectionRange;
+        if (isAlert) { StopCoroutine(ALERT_TIME()); }
         StartCoroutine(ALERT_TIME());
         ChangeState(State.IDLE);
         yield return null;
@@ -107,6 +116,7 @@ public class Enemy_move : MonoBehaviour
         yield return new WaitForSeconds(60);
         Debug.Log(0);
         detectionRange = initDetectionRange;
+        isAlert = false;
         yield return null;
     }
 
@@ -139,7 +149,7 @@ public class Enemy_move : MonoBehaviour
         return shortest;
     }
 
-    private void ChangeState(State nowState)
+    public void ChangeState(State nowState)
     {
         state = nowState;
     }
@@ -182,6 +192,11 @@ public class Enemy_move : MonoBehaviour
     public bool IsTargetDetected()
     {
         return isTargetDetected;
+    }
+
+    public void setDestination(Transform target)
+    {
+        nav.destination = target.position;
     }
 
     // 감지 범위를 시각적으로 표시 (디버깅 용)

@@ -359,3 +359,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightRenderer: {fileID: 315700925628732030}
+  e_control: {fileID: 3103070242970781879, guid: 979910fba9864ef48bc5a10fb5e89c37,
+    type: 3}
