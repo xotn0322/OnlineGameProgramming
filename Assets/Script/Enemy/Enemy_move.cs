@@ -7,6 +7,8 @@ using UnityEngine.AI;
 public class Enemy_move : MonoBehaviour
 {
     NavMeshAgent nav;
+    MeshRenderer self;
+    private Color initColor;
     private int point;
     private float HP = 10.0f;
     private float initDetectionRange;
@@ -37,6 +39,8 @@ public class Enemy_move : MonoBehaviour
     {
         nav = GetComponent<NavMeshAgent>();
         initDetectionRange = detectionRange;
+        self = GetComponent<MeshRenderer>();
+        initColor = self.material.color;
 
         state = State.IDLE;
         StartCoroutine(StateMachine());
@@ -48,30 +52,29 @@ public class Enemy_move : MonoBehaviour
         {
             DetectTarget();
             yield return StartCoroutine(state.ToString());
-            //Debug.Log(state.ToString());
         }
     }
 
     IEnumerator IDLE()
     {
+        self.material.color = initColor;
         if (!nav.pathPending && nav.remainingDistance < 0.5f)
         {
             nav.destination = distributeY(wayPoints[point]);
 
             point = (point + 1) % wayPoints.Length;
 
-            /*if (!isidle) { isidle = true; }*/
         }
-        //DetectTarget();
         yield return null;
     }
 
     IEnumerator CHASE()
     {
-        nav.destination = distributeY(target);
+        self.material.color = Color.red;
         if (IsTargetDetected())
         {
-            if (nav.remainingDistance <= attackRange)
+            nav.destination = distributeY(target);
+            if (getDistanceToTarget() < attackRange && target != null)
             {
                 // StateMachine 을 공격으로 변경
                 //ChangeState(State.ATTACK);
@@ -79,18 +82,17 @@ public class Enemy_move : MonoBehaviour
             }
         }
         else
-        {
+        { 
             // 목표와의 거리가 멀어진 경우
-            if (nav.remainingDistance > detectionRange)
+            if (nav.remainingDistance > detectionRange || nav.remainingDistance <= 0)
             {
                 /*//사거리에서 벗어난 경우 즉시 멈춤
                 nav.destination = transform.position;
                 yield return new WaitForSeconds(0.5f);*/
 
                 // StateMachine 을 경계로 변경
-                //point = getShortestPoint(); //근처에서 가장 가까운 웨이포인트 검색
-                point = 0;
-                Debug.Log(point);
+                point = getShortestPoint(); //근처에서 가장 가까운 웨이포인트 검색
+                //point = 0; //처음지점으로
                 nav.destination = distributeY(wayPoints[point]);
                 isAlert = true;
                 ChangeState(State.ALERT);
@@ -103,7 +105,6 @@ public class Enemy_move : MonoBehaviour
 
     IEnumerator ALERT()
     {
-        Debug.Log(1);
         detectionRange = alertDetectionRange;
         if (isAlert) { StopCoroutine(ALERT_TIME()); }
         StartCoroutine(ALERT_TIME());
@@ -114,7 +115,6 @@ public class Enemy_move : MonoBehaviour
     IEnumerator ALERT_TIME()
     {
         yield return new WaitForSeconds(60);
-        Debug.Log(0);
         detectionRange = initDetectionRange;
         isAlert = false;
         yield return null;
@@ -156,7 +156,6 @@ public class Enemy_move : MonoBehaviour
 
     void DetectTarget()
     {
-        //Debug.Log(detectionRange);
         isTargetDetected = false;
 
         float angleStep = detectionAngle / rayCount;
@@ -197,6 +196,20 @@ public class Enemy_move : MonoBehaviour
     public void setDestination(Transform target)
     {
         nav.destination = target.position;
+    }
+
+    public float getDistanceToTarget()
+    {
+        float distance;
+        if(target != null)
+        {
+            distance = (target.transform.position - gameObject.transform.position).magnitude;
+            return distance;
+        }
+        else
+        {
+            return attackRange += 1;
+        }
     }
 
     // 감지 범위를 시각적으로 표시 (디버깅 용)
