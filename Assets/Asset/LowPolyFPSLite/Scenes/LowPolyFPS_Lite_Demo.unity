@@ -380,6 +380,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 6234203473002991042, guid: 4fd28c139ef947f479a41b10a1617d21,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6360587918528159042, guid: 4fd28c139ef947f479a41b10a1617d21,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -487,6 +492,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234203473002991042, guid: 4fd28c139ef947f479a41b10a1617d21,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6360587918528159042, guid: 4fd28c139ef947f479a41b10a1617d21,
         type: 3}
@@ -3048,6 +3058,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234203473002991042, guid: 4fd28c139ef947f479a41b10a1617d21,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6360587918528159042, guid: 4fd28c139ef947f479a41b10a1617d21,
         type: 3}
@@ -7090,6 +7105,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemys
       objectReference: {fileID: 0}
+    - target: {fileID: 8084495130921541041, guid: 979910fba9864ef48bc5a10fb5e89c37,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -8567,6 +8587,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6234203473002991042, guid: 4fd28c139ef947f479a41b10a1617d21,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6234203473002991042, guid: 4fd28c139ef947f479a41b10a1617d21,
         type: 3}
